@@ -5,17 +5,22 @@ WEBHOOK = "https://discord.com/api/webhooks/1480184925172011108/VHK2TDc3BYsvlqco
 URL = "https://mbasic.facebook.com/nghichthuyhanofficial"
 
 headers = {
- "User-Agent": "Mozilla/5.0"
+ "User-Agent": "Mozilla/5.0 (Windows NT 10.0)"
 }
 
 r = requests.get(URL, headers=headers)
-soup = BeautifulSoup(r.text,"html.parser")
 
-post = soup.find("a", string="Full Story")
+soup = BeautifulSoup(r.text, "html.parser")
 
-if post:
- link = "https://facebook.com"+post["href"]
+posts = soup.find_all("a")
 
- requests.post(WEBHOOK,json={
-  "content":f"📢 Bài mới từ fanpage\n{link}"
- })
+for post in posts:
+ if "/story.php" in post.get("href",""):
+
+  link = "https://facebook.com" + post["href"]
+
+  requests.post(WEBHOOK,json={
+   "content":f"📢 Bài mới từ fanpage\n{link}"
+  })
+
+  break
